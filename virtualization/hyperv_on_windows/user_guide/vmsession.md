@@ -1,10 +1,22 @@
 # Manage Windows with PowerShell Direct
-
+ 
 You can use PowerShell Direct to remotely manage a Windows 10 or Windows Server Technical Preview virtual machine from a Windows 10 or Windows Server Technical Preview Hyper-V host. PowerShell Direct allows PowerShell management inside a virtual machine regardless of the network configuration or remote management settings on either the Hyper-V host or the virtual machine. This makes it easier for Hyper-V Administrators to automate and script virtual machine management and configuration.
 
-There are two ways to run PowerShell Direct:  
+There are many ways to run PowerShell Direct:  
 * As an interactive session -- [go to this section](vmsession.md#create-and-exit-an-interactive-powershell-session) to create and exit a PowerShell Direct session using PSSession cmdlets
 * To execute a set of commands or script -- [go to this section](vmsession.md#run-a-script-or-command-with-invoke-command) to run a script or command with the Invoke-Command cmdlet
+
+**New PowerShell Direct features -- 14280 and later**
+
+Starting in Windows builds 14280 and later, PowerShell Direct has received some new functionality:
+
+* Moving data between the virtual machine and the Hyper-V host with persistent PowerShell Direct sessions and [Copy-Item](https://technet.microsoft.com/en-us/library/hh849793.aspx).  
+  ``` PowerShell
+  $s = New-PSSession -VMName <VMName>
+  
+  Copy-Item -ToSession $s -Path c:\test\host.txt -Destination c:\test
+  Copy-Item -FromSession $s -Path c:\test\host.txt -Destination c:\test2
+  ``` 
 
 
 ## Requirements
@@ -55,6 +67,28 @@ To run a single command, use the **-ScriptBlock** parameter:
 ## Troubleshooting
 
 There are a small set of common error messages surfaced through PowerShell Direct.  Here are the most common, some causes, and tools for diagnosing issues.
+
+### -VMName or -VMID parameters don't exist
+**Problem:**  
+`Enter-PSSession`, `Invoke-Command`, or `New-PSSession` do not have a `-VMName` or `-VMID` parameter.
+
+**Potential causes:**  
+The most likely issue is that PowerShell Direct isn't supported by your host operating system.
+
+You can check your Windows build by running the following command:
+
+``` PowerShell
+[System.Environment]::OSVersion.Version
+```
+
+If you are running a supported build, it is also possible your version of PowerShell does not run PowerShell Direct.  For PowerShell Direct and JEA, the major version must be 5 or later.
+
+You can check your PowerShell version build by running the following command:
+
+``` PowerShell
+$PSVersionTable.PSVersion
+```
+
 
 ### Error: A remote session might have ended
 **Error message:**
