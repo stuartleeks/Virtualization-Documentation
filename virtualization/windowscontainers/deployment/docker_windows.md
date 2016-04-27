@@ -76,7 +76,7 @@ Application Tab:
 
 - **Arguments:** /s /c C:\ProgramData\docker\runDockerDaemon.cmd < nul
 
-- **Service Name** - Docker
+- **Service Name:** Docker
 
 ![](media/nssm1.png)
 
